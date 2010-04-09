@@ -2,7 +2,7 @@ function _IG_LoadLibraryDeferred(url, callback) {
   var scriptElement = document.createElement("script");
   scriptElement.src=url;
   document.getElementsByTagName("head")[0].appendChild(scriptElement);
-  setTimeout(function(){eval(callback)}, 1000);
+  setTimeout(function(){eval(callback);}, 1000);
 }
 
 function _gel(id) {

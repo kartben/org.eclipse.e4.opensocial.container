@@ -14,5 +14,5 @@ gadgets.util = function() {
 		    }
 		    return obj;
 		}
-	}
+	};
 }();

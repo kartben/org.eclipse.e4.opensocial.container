@@ -28,7 +28,7 @@ gadgets.io = function() {
 			}
 
 		}
-	}
+	};
 }();
 
 gadgets.io.RequestParameters = gadgets.util.makeEnum( [ "METHOD",
