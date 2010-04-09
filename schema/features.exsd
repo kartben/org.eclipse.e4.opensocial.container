@@ -51,7 +51,7 @@
       <complexType>
          <sequence minOccurs="0" maxOccurs="unbounded">
             <element ref="script"/>
-            <element ref="browserFunctionFactory"/>
+            <element ref="browserRPCHandler"/>
             <element ref="dependsOn"/>
          </sequence>
          <attribute name="name" type="string" use="required">
@@ -86,7 +86,7 @@
       </complexType>
    </element>
 
-   <element name="browserFunctionFactory">
+   <element name="browserRPCHandler">
       <complexType>
          <attribute name="name" type="string" use="required">
             <annotation>
@@ -95,13 +95,13 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="factory" type="string" use="required">
+         <attribute name="handler" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.e4.opensocial.container.BrowserFunctionFactory"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.e4.ui.web.BrowserRPCHandler"/>
                </appinfo>
             </annotation>
          </attribute>

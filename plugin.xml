@@ -11,6 +11,9 @@
                source="js/core/util.js">
          </script>
          <script
+               source="js/core/log.js">
+         </script>
+         <script
                source="js/core/window.js">
          </script>
       </feature>
@@ -22,6 +25,9 @@
          </script>
          <dependsOn
                feature="core">
+         </dependsOn>
+         <dependsOn
+               feature="rpc">
          </dependsOn>
       </feature>
       <feature
