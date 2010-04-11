@@ -16,6 +16,10 @@
          <script
                source="js/core/window.js">
          </script>
+         <browserRPCHandler
+               class="org.eclipse.e4.opensocial.container.internal.browserHandlers.core.LogHandler"
+               name="log">
+         </browserRPCHandler>
       </feature>
       <feature
             name="core.io"
@@ -25,9 +29,6 @@
          </script>
          <dependsOn
                feature="core">
-         </dependsOn>
-         <dependsOn
-               feature="rpc">
          </dependsOn>
          <browserRPCHandler
                class="org.eclipse.e4.opensocial.container.internal.browserHandlers.core.MakeXmlHttpRequestHandler"
