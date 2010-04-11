@@ -10,17 +10,23 @@
  */
 package org.eclipse.e4.opensocial.container.resolver;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.e4.opensocial.container.internal.features.Feature;
 import org.eclipse.e4.opensocial.model.Module;
+import org.eclipse.osgi.service.resolver.ResolverError;
 
 public interface ModuleResolver {
 	public class UnresolvedException extends Exception {
-		public UnresolvedException(String msg) {
-			super(msg);
-		}
+		private static final long serialVersionUID = -5975029222979497392L;
+		public ResolverError[] _resolverErrors;
 
+		public UnresolvedException(Module m, ResolverError[] resolverErrors) {
+			super("Unsatisfied constraints met while resolving module " + m
+					+ ": " + Arrays.toString(resolverErrors));
+			_resolverErrors = resolverErrors;
+		}
 	}
 
 	/**

@@ -11,7 +11,6 @@
 package org.eclipse.e4.opensocial.container.internal.features;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,10 +135,10 @@ public class FeatureManager implements ModuleResolver, IRegistryEventListener {
 	 * .eclipse.e4.opensocial.model.Module)
 	 */
 	@Override
-	public List<Feature> resolve(Module m) throws UnresolvedException {
+	public List<Feature> resolve(Module module) throws UnresolvedException {
 		List<Feature> features = new ArrayList<Feature>();
 		BundleDescription moduleDesc = FeatureUtils.moduleToBundleDescription(
-				m, _platformAdmin.getFactory());
+				module, _platformAdmin.getFactory());
 		// !!! WAITING FOR FIX OF BUG 308738 !!!
 		State temporaryState = _platformAdmin.getFactory().createState(
 				_featuresState);
@@ -149,8 +148,8 @@ public class FeatureManager implements ModuleResolver, IRegistryEventListener {
 		temporaryState.resolve();
 
 		if (!moduleDesc.isResolved()) {
-			throw new UnresolvedException(Arrays.toString(temporaryState
-					.getResolverErrors(moduleDesc)));
+			throw new UnresolvedException(module, temporaryState
+					.getResolverErrors(moduleDesc));
 		}
 
 		BundleDescription[] bundles = temporaryState.getStateHelper()

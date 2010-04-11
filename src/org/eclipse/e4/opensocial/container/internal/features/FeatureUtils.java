@@ -37,6 +37,12 @@ public class FeatureUtils {
 					false, true));
 		}
 
+		// always add implicit dependency to core and core.io
+		bundleDependencies.add(factory.createBundleSpecification("core", null,
+				false, true));
+		bundleDependencies.add(factory.createBundleSpecification("core.io",
+				null, false, true));
+
 		BundleDescription bundleDescription = factory.createBundleDescription(
 				module.hashCode(), module.getModulePrefs().getTitle(),
 				new Version("1.0.0"), null, bundleDependencies
