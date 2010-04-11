@@ -16,8 +16,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -25,8 +25,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.eclipse.e4.opensocial.model.DocumentRoot;
+import org.eclipse.e4.opensocial.model.LanguageDirection;
 import org.eclipse.e4.opensocial.model.Locale;
 import org.eclipse.e4.opensocial.model.Module;
+import org.eclipse.e4.opensocial.model.Msg;
+import org.eclipse.e4.opensocial.model.UserPref;
+import org.eclipse.e4.opensocial.model.util.OpenSocialResourceFactoryImpl;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -36,12 +43,20 @@ public class OpenSocialUtil {
 
 	private static int moduleId = 0;
 
+	public static void main(String[] args) {
+		// System.out
+		// .println(loadModule("http://m2mdemo.eanyware-tech.com/resources/gadget/Temperature.xml"));
+
+	}
+
 	public static Module loadModule(String uriString) {
 		java.net.URI uri;
 		Module module;
 		try {
-			uri = new java.net.URI(uriString);
-			module = parseModuleXML(uri);
+			Resource resource = new OpenSocialResourceFactoryImpl()
+					.createResource(URI.createURI(uriString));
+			resource.load(Collections.EMPTY_MAP);
+			module = ((DocumentRoot) resource.getContents().get(0)).getModule();
 		} catch (Exception e) {
 			throw new RuntimeException("Could not load module", e);
 		}
@@ -51,54 +66,55 @@ public class OpenSocialUtil {
 		hangmanMap.put("__MODULE_ID__", String.valueOf(moduleId++));
 		hangmanMap.put("__ENV_google_apps_auth_path__", "render#");
 
-		populateHangmanMapFromLocale(hangmanMap, locale, uri);
-		populateHangmanMapFromUserPrefs(hangmanMap, module.userPrefs);
-
-		module.title = hangmanExpand(module.title, hangmanMap);
-		module.description = hangmanExpand(module.description, hangmanMap);
-		module.author = hangmanExpand(module.author, hangmanMap);
+		// populateHangmanMapFromLocale(hangmanMap, locale, uri);
+		// populateHangmanMapFromUserPrefs(hangmanMap, module.userPrefs);
+		//
+		// module.title = hangmanExpand(module.title, hangmanMap);
+		// module.description = hangmanExpand(module.description, hangmanMap);
+		// module.author = hangmanExpand(module.author, hangmanMap);
 
 		// System.out.println("Gadget: " + module.title);
 		// System.out.println("Author: " + module.author);
-		// System.out.println("Description: " + module.description);
-
-		for (OSGContent content : new HashSet<OSGContent>(module.contents
-				.values())) {
-			if ("url".equalsIgnoreCase(content.type)) {
-				content.href = hangmanExpand(content.href, hangmanMap);
-				// System.out.println("URL: " + content.href);
-			} else if ("html".equalsIgnoreCase(content.type)) {
-				content.value = hangmanExpand(content.value, hangmanMap);
-				// System.out.println("HTML: ...");
-			} else {
-				// System.out.println("unhandled type: " + content.type);
-			}
-			// System.out.println("Views: " + content.view);
-		}
+		// // System.out.println("Description: " + module.description);
+		//
+		// for (OSGContent content : new HashSet<OSGContent>(module.contents
+		// .values())) {
+		// if ("url".equalsIgnoreCase(content.type)) {
+		// content.href = hangmanExpand(content.href, hangmanMap);
+		// // System.out.println("URL: " + content.href);
+		// } else if ("html".equalsIgnoreCase(content.type)) {
+		// content.value = hangmanExpand(content.value, hangmanMap);
+		// // System.out.println("HTML: ...");
+		// } else {
+		// // System.out.println("unhandled type: " + content.type);
+		// }
+		// // System.out.println("Views: " + content.view);
+		// }
 		return module;
 	}
 
 	private static void populateHangmanMapFromUserPrefs(
-			Map<String, String> hangmanMap, List<OSGUserPref> userPrefs) {
-		for (OSGUserPref pref : userPrefs) {
-			hangmanMap.put("__UP_" + pref.name + "__", pref.defaultValue);
+			Map<String, String> hangmanMap, List<UserPref> userPrefs) {
+		for (UserPref pref : userPrefs) {
+			hangmanMap.put("__UP_" + pref.getName() + "__", pref
+					.getDefaultValue());
 		}
 	}
 
 	private static void populateHangmanMapFromLocale(
-			Map<String, String> hangmanMap, OSGLocale locale, java.net.URI uri) {
+			Map<String, String> hangmanMap, Locale locale, java.net.URI uri) {
 		hangmanMap.put("__BIDI_START_EDGE__", "left");
 		hangmanMap.put("__BIDI_END_EDGE__", "right");
 		hangmanMap.put("__BIDI_DIR__", "ltr");
 		hangmanMap.put("__BIDI_REVERSE_DIR__", "rtl");
 		if (locale != null) {
-			if ("rtl".equals(locale.languageDirection)) {
+			if (locale.getLanguageDirection() == LanguageDirection.RTL) {
 				hangmanMap.put("__BIDI_START_EDGE__", "right");
 				hangmanMap.put("__BIDI_END_EDGE__", "left");
 				hangmanMap.put("__BIDI_DIR__", "rtl");
 				hangmanMap.put("__BIDI_REVERSE_DIR__", "ltr");
 			}
-			String messagesURIString = locale.messagesURI;
+			String messagesURIString = locale.getMessages();
 			if (messagesURIString != null) {
 				if (!messagesURIString.startsWith("http")) {
 					if (!messagesURIString.startsWith("/")) {
@@ -117,7 +133,7 @@ public class OpenSocialUtil {
 					throw new RuntimeException("Could not parse messages", e);
 				}
 			} else {
-				addMessagesToMap(hangmanMap, locale.messages);
+				addMessagesToMap(hangmanMap, locale.getMsg());
 			}
 		}
 	}
@@ -183,9 +199,9 @@ public class OpenSocialUtil {
 	}
 
 	private static void addMessagesToMap(Map<String, String> hangmanMap,
-			Map<String, String> messages) {
-		for (Map.Entry<String, String> entry : messages.entrySet()) {
-			hangmanMap.put("__MSG_" + entry.getKey() + "__", entry.getValue());
+			List<Msg> messages) {
+		for (Msg msg : messages) {
+			hangmanMap.put("__MSG_" + msg.getName() + "__", msg.getValue());
 		}
 	}
 

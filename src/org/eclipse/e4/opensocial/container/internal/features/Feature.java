@@ -10,10 +10,20 @@
  */
 package org.eclipse.e4.opensocial.container.internal.features;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.e4.ui.web.BrowserRPCHandler;
 
 public class Feature {
 
@@ -40,11 +50,59 @@ public class Feature {
 		return _version;
 	}
 
+	public Map<String, String> getJavascriptSources() {
+		Map<String, String> deps = new HashMap<String, String>();
+		for (IConfigurationElement ice : _ice.getChildren("script")) {
+			StringBuffer sb = new StringBuffer();
+			BufferedReader scriptReader = null;
+			try {
+				String sourceLocation = ice.getAttribute("source");
+				InputStream jsSourceStream = Platform.getBundle(
+						ice.getNamespaceIdentifier()).getEntry(sourceLocation)
+						.openStream();
+				scriptReader = new BufferedReader(new InputStreamReader(
+						jsSourceStream));
+				String line = null;
+				while ((line = scriptReader.readLine()) != null) {
+					sb.append(line + "\r\n");
+				}
+				deps.put(sourceLocation, sb.toString());
+			} catch (InvalidRegistryObjectException e) {
+				// TODO log correctly
+			} catch (IOException e) {
+				// TODO log correctly
+			} finally {
+				if (scriptReader != null)
+					try {
+						scriptReader.close();
+					} catch (IOException e) {
+					}
+			}
+		}
+		return deps;
+	}
+
 	public List<String> getDependencies() {
 		List<String> deps = new ArrayList<String>();
 		for (IConfigurationElement ice : _ice.getChildren("dependsOn")) {
 			deps.add(ice.getAttribute("feature"));
 		}
 		return deps;
+	}
+
+	public Map<String, BrowserRPCHandler> getBrowserRPCHandlers() {
+		Map<String, BrowserRPCHandler> handlers = new HashMap<String, BrowserRPCHandler>();
+		for (IConfigurationElement ice : _ice.getChildren("browserRPCHandler")) {
+			try {
+				String name = ice.getAttribute("name");
+				BrowserRPCHandler handler;
+				handler = (BrowserRPCHandler) ice
+						.createExecutableExtension("class");
+				handlers.put(name, handler);
+			} catch (CoreException e) {
+				// TODO log RPC handler instantiation error
+			}
+		}
+		return handlers;
 	}
 }

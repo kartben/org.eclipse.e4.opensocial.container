@@ -45,3 +45,5 @@ gadgets.io.ContentType = gadgets.util
 
 gadgets.io.AuthorizationType = gadgets.util.makeEnum( [ "NONE", "SIGNED",
 		"OAUTH" ]);
+
+

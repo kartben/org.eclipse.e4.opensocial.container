@@ -2,5 +2,8 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.e4.opensocial.container">
    <implementation class="org.eclipse.e4.opensocial.container.internal.features.FeatureManager"/>
    <reference bind="setPlatformAdmin" cardinality="1..1" interface="org.eclipse.osgi.service.resolver.PlatformAdmin" name="PlatformAdmin" policy="static"/>
-   <reference bind="setExtensionRegistry" cardinality="1..1" interface="org.eclipse.core.runtime.IExtensionRegistry" name="IExtensionRegistry" policy="static"/>
+   <reference bind="setExtensionRegistry" unbind="unsetExtensionRegistry" cardinality="1..1" interface="org.eclipse.core.runtime.IExtensionRegistry" name="IExtensionRegistry" policy="static"/>
+   <service>
+      <provide interface="org.eclipse.e4.opensocial.container.resolver.ModuleResolver"/>
+   </service>
 </scr:component>

@@ -51,7 +51,7 @@
          </dependsOn>
       </feature>
       <feature
-            name="set-title"
+            name="settitle"
             version="1.0.0">
          <script
                source="js/set-title/set-title.js">
@@ -61,7 +61,7 @@
          </dependsOn>
       </feature>
       <feature
-            name="set-prefs"
+            name="setprefs"
             version="1.0.0">
          <script
                source="js/setprefs/setprefs.js">

@@ -10,8 +10,10 @@
  */
 package org.eclipse.e4.opensocial.container.internal.features;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -19,11 +21,13 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryEventListener;
+import org.eclipse.e4.opensocial.container.resolver.ModuleResolver;
+import org.eclipse.e4.opensocial.model.Module;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.osgi.service.resolver.State;
 
-public class FeatureManager implements IRegistryEventListener {
+public class FeatureManager implements ModuleResolver, IRegistryEventListener {
 	private static final String FEATURES_EXT_POINT_ID = "org.eclipse.e4.opensocial.container.features";
 	private static final String FEATURE_ELEM = "feature";
 	private static final String FEATURE_ATTR_NAME = "name";
@@ -44,6 +48,11 @@ public class FeatureManager implements IRegistryEventListener {
 	protected void setPlatformAdmin(PlatformAdmin platformAdmin) {
 		_platformAdmin = platformAdmin;
 		_featuresState = _platformAdmin.getFactory().createState(true);
+
+		_featuresState.addBundle(_platformAdmin.getFactory()
+				.createBundleDescription(1, "opensocial-0.8", null, null, null,
+						null, null, null, false, false, false, null, null,
+						null, null, null));
 	}
 
 	protected void setExtensionRegistry(IExtensionRegistry extensionRegistry) {
@@ -58,6 +67,11 @@ public class FeatureManager implements IRegistryEventListener {
 				// no other top-level elements at the moment
 			}
 		}
+	}
+
+	protected void unsetExtensionRegistry(IExtensionRegistry extensionRegistry) {
+		_extensionRegistry.removeListener(this);
+		_extensionRegistry = null;
 	}
 
 	@Override
@@ -77,14 +91,15 @@ public class FeatureManager implements IRegistryEventListener {
 		String version = ice.getAttribute(FEATURE_ATTR_VERSION);
 		Feature f = new Feature(name, version, ice);
 		_availableFeatures.put(name, f);
-		_featuresState.addBundle(FeatureUtils.featureToBundleDescription(f,
-				_featuresState.getFactory()));
-		_featuresState.resolve();
-		BundleDescription[] resolvedBundles = _featuresState
-				.getResolvedBundles();
-		System.out.println(Arrays.toString(resolvedBundles));
-		_featuresState.getStateHelper().sortBundles(resolvedBundles);
-		System.out.println(Arrays.toString(resolvedBundles));
+		_featuresState.addBundle(FeatureUtils
+				.featureExtensionToBundleDescription(f, _featuresState
+						.getFactory()));
+		// _featuresState.resolve();
+		// BundleDescription[] resolvedBundles = _featuresState
+		// .getResolvedBundles();
+		// System.out.println(Arrays.toString(resolvedBundles));
+		// _featuresState.getStateHelper().sortBundles(resolvedBundles);
+		// System.out.println(Arrays.toString(resolvedBundles));
 	}
 
 	@Override
@@ -113,4 +128,41 @@ public class FeatureManager implements IRegistryEventListener {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.e4.opensocial.container.resolver.ModuleResolver#resolve(org
+	 * .eclipse.e4.opensocial.model.Module)
+	 */
+	@Override
+	public List<Feature> resolve(Module m) throws UnresolvedException {
+		List<Feature> features = new ArrayList<Feature>();
+		BundleDescription moduleDesc = FeatureUtils.moduleToBundleDescription(
+				m, _platformAdmin.getFactory());
+		// !!! WAITING FOR FIX OF BUG 308738 !!!
+		State temporaryState = _platformAdmin.getFactory().createState(
+				_featuresState);
+		// !!!!!
+		temporaryState.setResolver(_platformAdmin.createResolver());
+		temporaryState.addBundle(moduleDesc);
+		temporaryState.resolve();
+
+		if (!moduleDesc.isResolved()) {
+			throw new UnresolvedException(Arrays.toString(temporaryState
+					.getResolverErrors(moduleDesc)));
+		}
+
+		BundleDescription[] bundles = temporaryState.getStateHelper()
+				.getPrerequisites(new BundleDescription[] { moduleDesc });
+		temporaryState.getStateHelper().sortBundles(bundles);
+		for (BundleDescription bundle : bundles) {
+			if (bundle.getUserObject() instanceof Feature) {
+				Feature f = (Feature) bundle.getUserObject();
+				features.add(f);
+			}
+		}
+
+		return features;
+	}
 }

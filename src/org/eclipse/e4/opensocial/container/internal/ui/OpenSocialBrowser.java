@@ -10,19 +10,24 @@
  */
 package org.eclipse.e4.opensocial.container.internal.ui;
 
+import org.eclipse.e4.opensocial.container.internal.util.HtmlGenerator;
+import org.eclipse.e4.opensocial.container.resolver.ModuleResolver.UnresolvedException;
 import org.eclipse.e4.opensocial.model.Module;
 import org.eclipse.e4.ui.web.BrowserRPC;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 
 /**
  * An SWT {@link Browser} configured to automatically display a given OpenSocial
  * {@link Module}
  */
-public class OpenSocialBrowser extends Browser {
+public class OpenSocialBrowser extends Composite {
 
 	private Module _module;
 	private BrowserRPC _browserRPC;
+	private Browser _browser;
 
 	/**
 	 * @param module
@@ -32,9 +37,25 @@ public class OpenSocialBrowser extends Browser {
 	 */
 	public OpenSocialBrowser(Composite parent, int style, Module module) {
 		super(parent, style);
+		this.setLayout(new FillLayout());
+		_browser = new Browser(this, SWT.NONE);
+
 		_module = module;
 
-		_browserRPC = new BrowserRPC(this);
+		_browserRPC = new BrowserRPC(_browser);
+
+		try {
+			String html = HtmlGenerator.generateHtml(module);
+			_browser.setText(html);
+		} catch (UnresolvedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public Browser getBrowser() {
+		return _browser;
 	}
 
 	/*

@@ -11,4 +11,11 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/featureManager.xml
 Import-Package: org.eclipse.e4.opensocial.model,
- org.eclipse.emf.common.util
+ org.eclipse.e4.opensocial.model.util,
+ org.eclipse.emf.common.util,
+ org.eclipse.emf.ecore.resource,
+ org.eclipse.emf.ecore.resource.impl
+Export-Package: org.eclipse.e4.opensocial.container,
+ org.eclipse.e4.opensocial.container.internal.features;x-internal:=true,
+ org.eclipse.e4.opensocial.container.internal.ui;x-internal:=true,
+ org.eclipse.e4.opensocial.container.internal.util;x-internal:=true
