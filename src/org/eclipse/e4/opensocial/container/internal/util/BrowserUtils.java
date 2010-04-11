@@ -18,6 +18,8 @@ import org.eclipse.e4.opensocial.container.resolver.ModuleResolver;
 import org.eclipse.e4.opensocial.container.resolver.ModuleResolver.UnresolvedException;
 import org.eclipse.e4.opensocial.model.Module;
 import org.eclipse.e4.opensocial.model.Type;
+import org.eclipse.e4.ui.web.BrowserRPC;
+import org.eclipse.e4.ui.web.BrowserRPCHandler;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -26,7 +28,7 @@ import org.osgi.framework.ServiceReference;
  * @author Benji
  * 
  */
-public class HtmlGenerator {
+public class BrowserUtils {
 	public static String generateHtml(Module module) throws UnresolvedException {
 		StringBuilder sb = new StringBuilder();
 
@@ -47,13 +49,8 @@ public class HtmlGenerator {
 	private static void appendContainerScripts(Module module, StringBuilder sb)
 			throws UnresolvedException {
 		sb.append("<script>\r\n");
-		BundleContext bundleContext = FrameworkUtil.getBundle(
-				HtmlGenerator.class).getBundleContext();
-		ServiceReference sr = bundleContext
-				.getServiceReference(ModuleResolver.class.getName());
-		ModuleResolver resolver = (ModuleResolver) bundleContext.getService(sr);
 
-		List<Feature> features = resolver.resolve(module);
+		List<Feature> features = getModuleResolver().resolve(module);
 
 		for (Feature feature : features) {
 			sb.append("/********** Scripts for feature: '" + feature.getName()
@@ -73,4 +70,27 @@ public class HtmlGenerator {
 		}
 
 	}
+
+	public static void registerHandlers(Module module, BrowserRPC _browserRPC)
+			throws UnresolvedException {
+		List<Feature> features = getModuleResolver().resolve(module);
+		for (Feature feature : features) {
+			for (Entry<String, BrowserRPCHandler> handlerEntry : feature
+					.getBrowserRPCHandlers().entrySet()) {
+				_browserRPC.addRPCHandler(handlerEntry.getKey(), handlerEntry
+						.getValue());
+			}
+		}
+
+	}
+
+	private static ModuleResolver getModuleResolver() {
+		BundleContext bundleContext = FrameworkUtil.getBundle(
+				BrowserUtils.class).getBundleContext();
+		ServiceReference sr = bundleContext
+				.getServiceReference(ModuleResolver.class.getName());
+		ModuleResolver resolver = (ModuleResolver) bundleContext.getService(sr);
+		return resolver;
+	}
+
 }

@@ -10,7 +10,7 @@
  */
 package org.eclipse.e4.opensocial.container.internal.ui;
 
-import org.eclipse.e4.opensocial.container.internal.util.HtmlGenerator;
+import org.eclipse.e4.opensocial.container.internal.util.BrowserUtils;
 import org.eclipse.e4.opensocial.container.resolver.ModuleResolver.UnresolvedException;
 import org.eclipse.e4.opensocial.model.Module;
 import org.eclipse.e4.ui.web.BrowserRPC;
@@ -45,7 +45,8 @@ public class OpenSocialBrowser extends Composite {
 		_browserRPC = new BrowserRPC(_browser);
 
 		try {
-			String html = HtmlGenerator.generateHtml(module);
+			String html = BrowserUtils.generateHtml(module);
+			BrowserUtils.registerHandlers(module, _browserRPC);
 			_browser.setText(html);
 		} catch (UnresolvedException e) {
 			// TODO Auto-generated catch block
