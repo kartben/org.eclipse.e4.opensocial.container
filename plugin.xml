@@ -29,6 +29,10 @@
          <dependsOn
                feature="rpc">
          </dependsOn>
+         <browserRPCHandler
+               class="org.eclipse.e4.opensocial.container.internal.browserHandlers.core.MakeXmlHttpRequestHandler"
+               name="makeXmlHttpRequestHandler">
+         </browserRPCHandler>
       </feature>
       <feature
             name="rpc"
