@@ -18,7 +18,7 @@
          </script>
          <browserRPCHandler
                class="org.eclipse.e4.opensocial.container.internal.browserHandlers.core.LogHandler"
-               name="log">
+               name="e4.opensocial.core.log">
          </browserRPCHandler>
       </feature>
       <feature
@@ -32,7 +32,7 @@
          </dependsOn>
          <browserRPCHandler
                class="org.eclipse.e4.opensocial.container.internal.browserHandlers.core.MakeXmlHttpRequestHandler"
-               name="makeXmlHttpRequest">
+               name="e4.opensocial.core.io.makeXmlHttpRequest">
          </browserRPCHandler>
       </feature>
       <feature
@@ -90,6 +90,18 @@
          <dependsOn
                feature="rpc">
          </dependsOn>
+         <browserRPCHandler
+               class="org.eclipse.e4.opensocial.container.internal.browserHandlers.pubsub.SubscribeHandler"
+               name="e4.opensocial.pubsub.subscribe">
+         </browserRPCHandler>
+         <browserRPCHandler
+               class="org.eclipse.e4.opensocial.container.internal.browserHandlers.pubsub.UnsubscribeHandler"
+               name="e4.opensocial.pubsub.unsubscribe">
+         </browserRPCHandler>
+         <browserRPCHandler
+               class="org.eclipse.e4.opensocial.container.internal.browserHandlers.pubsub.PublishHandler"
+               name="e4.opensocial.pubsub.publish">
+         </browserRPCHandler>
       </feature>
    </extension>
 

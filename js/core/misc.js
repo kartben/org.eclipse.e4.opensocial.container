@@ -19,12 +19,13 @@ function _IG_AddDOMEventHandler(domObject,event,callback){
     domObject.attachEvent('on'+event,callback);
   }
 }
-function _IG_AdjustIFrameHeight() {
-}
+
 function _IG_Analytics() {
 }
+
 function _IG_RegisterOnloadHandler(handler) {
 	_IG_AddDOMEventHandler(window, "load", function(){handler();});
 }
+
 function _IG_RegisterMaximizeHandler(handler) {
 }

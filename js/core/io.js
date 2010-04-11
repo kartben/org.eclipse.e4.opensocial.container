@@ -19,7 +19,7 @@ gadgets.io = function() {
 
 				var postData = params[gadgets.io.RequestParameters.POST_DATA];
 
-				e4RPC('makeXmlHttpRequest', url, callback.toString(), method,
+				e4RPC('e4.opensocial.core.makeXmlHttpRequest', url, callback.toString(), method,
 						contentType, headersStr, postData);
 			} catch (err) {
 				// FIXME: this should not happen, but for some reason

@@ -8,19 +8,12 @@
  *   Contributors:
  *      Benjamin Cabe, Sierra Wireless - initial API and implementation
  */
-package org.eclipse.e4.opensocial.container.internal.browserHandlers.core;
+package org.eclipse.e4.opensocial.container.internal.browserHandlers.pubsub;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.e4.ui.web.BrowserRPCHandler;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.ui.statushandlers.StatusManager;
 
-/**
- * @author kartben
- * 
- */
-public class LogHandler implements BrowserRPCHandler {
+public class UnsubscribeHandler implements BrowserRPCHandler {
 
 	/*
 	 * (non-Javadoc)
@@ -31,19 +24,9 @@ public class LogHandler implements BrowserRPCHandler {
 	 */
 	@Override
 	public Object handle(Browser browser, Object[] arguments) {
-		int statusSeverity = IStatus.INFO;
-		if ("info".equals(arguments[1]))
-			statusSeverity = IStatus.INFO;
-		else if ("warning".equals(arguments[1]))
-			statusSeverity = IStatus.WARNING;
-		else if ("error".equals(arguments[1]))
-			statusSeverity = IStatus.ERROR;
-
-		if ("info".equals(arguments[1])) {
-			StatusManager.getManager().handle(
-					new Status(statusSeverity, "opensocial-demo",
-							(String) arguments[2]));
-		}
+		// try to find the ServiceReference of an EventHandler with the same
+		// topic, and the same moduleId
+		// TODO
 		return null;
 	}
 
@@ -52,7 +35,10 @@ public class LogHandler implements BrowserRPCHandler {
 	 * 
 	 * @see org.eclipse.e4.ui.web.BrowserRPCHandler#dispose()
 	 */
+	@Override
 	public void dispose() {
-		// Nothing
+		// TODO Auto-generated method stub
+
 	}
+
 }

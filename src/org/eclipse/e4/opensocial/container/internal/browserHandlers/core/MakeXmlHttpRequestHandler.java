@@ -122,6 +122,15 @@ public class MakeXmlHttpRequestHandler implements BrowserRPCHandler {
 		return HttpStatus.SC_INTERNAL_SERVER_ERROR;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.e4.ui.web.BrowserRPCHandler#dispose()
+	 */
+	public void dispose() {
+		// Nothing
+	}
+
 	/**
 	 * TODO : Create a JSON representation of the RSS XML data
 	 * 

@@ -16,6 +16,8 @@ import org.eclipse.e4.opensocial.model.Module;
 import org.eclipse.e4.ui.web.BrowserRPC;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 
@@ -26,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 public class OpenSocialBrowser extends Composite {
 
 	private Module _module;
+
 	private BrowserRPC _browserRPC;
 	private Browser _browser;
 
@@ -39,10 +42,15 @@ public class OpenSocialBrowser extends Composite {
 		super(parent, style);
 		this.setLayout(new FillLayout());
 		_browser = new Browser(this, SWT.NONE);
+		_browser.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				_browserRPC.removeAllRPCHandlers();
+			}
+		});
+		_browserRPC = new BrowserRPC(_browser);
 
 		_module = module;
-
-		_browserRPC = new BrowserRPC(_browser);
 
 		try {
 			String html = BrowserUtils.generateHtml(module);
@@ -59,14 +67,7 @@ public class OpenSocialBrowser extends Composite {
 		return _browser;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.swt.widgets.Widget#dispose()
-	 */
-	@Override
-	public void dispose() {
-		super.dispose();
+	public Module getModule() {
+		return _module;
 	}
-
 }

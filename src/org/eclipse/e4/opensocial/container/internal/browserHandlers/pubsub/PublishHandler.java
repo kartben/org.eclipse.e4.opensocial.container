@@ -8,19 +8,16 @@
  *   Contributors:
  *      Benjamin Cabe, Sierra Wireless - initial API and implementation
  */
-package org.eclipse.e4.opensocial.container.internal.browserHandlers.core;
+package org.eclipse.e4.opensocial.container.internal.browserHandlers.pubsub;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.e4.ui.web.BrowserRPCHandler;
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.ui.statushandlers.StatusManager;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
 
-/**
- * @author kartben
- * 
- */
-public class LogHandler implements BrowserRPCHandler {
+public class PublishHandler extends AbstractPubSubHandler {
 
 	/*
 	 * (non-Javadoc)
@@ -31,19 +28,11 @@ public class LogHandler implements BrowserRPCHandler {
 	 */
 	@Override
 	public Object handle(Browser browser, Object[] arguments) {
-		int statusSeverity = IStatus.INFO;
-		if ("info".equals(arguments[1]))
-			statusSeverity = IStatus.INFO;
-		else if ("warning".equals(arguments[1]))
-			statusSeverity = IStatus.WARNING;
-		else if ("error".equals(arguments[1]))
-			statusSeverity = IStatus.ERROR;
-
-		if ("info".equals(arguments[1])) {
-			StatusManager.getManager().handle(
-					new Status(statusSeverity, "opensocial-demo",
-							(String) arguments[2]));
-		}
+		Dictionary<String, Object> properties = new Hashtable<String, Object>();
+		properties.put(EventConstants.MESSAGE, arguments[2]);
+		// TODO
+		// properties.put(MODULEID_EVENT_PROPERTY, 1234);
+		getEventAdmin().postEvent(new Event((String) arguments[1], properties));
 		return null;
 	}
 
@@ -52,7 +41,10 @@ public class LogHandler implements BrowserRPCHandler {
 	 * 
 	 * @see org.eclipse.e4.ui.web.BrowserRPCHandler#dispose()
 	 */
+	@Override
 	public void dispose() {
-		// Nothing
+		// TODO Auto-generated method stub
+
 	}
+
 }

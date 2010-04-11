@@ -5,7 +5,7 @@ var gadgets = gadgets || {};
  */
 gadgets.log = function(message) {
 	if(gadgets.log.currentLevel <= gadgets.log.INFO) {
-		e4RPC('log', 'info', message) ;
+		e4RPC('e4.opensocial.core.log', 'info', message) ;
 	}
 };
 
@@ -15,7 +15,7 @@ gadgets.log = function(message) {
  */
 gadgets.warn = function(message) {
 	if(gadgets.log.currentLevel <= gadgets.log.WARNING) {
-		e4RPC('log', 'warning', message) ;
+		e4RPC('e4.opensocial.core.log', 'warning', message) ;
 	}
 };
 
@@ -24,7 +24,7 @@ gadgets.warn = function(message) {
  */
 gadgets.error = function(message) {
 	if(gadgets.log.currentLevel <= gadgets.log.ERROR) {
-		e4RPC('log', 'error', message) ;
+		e4RPC('e4.opensocial.core.log', 'error', message) ;
 	}
 };
 

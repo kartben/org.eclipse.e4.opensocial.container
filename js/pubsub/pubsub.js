@@ -3,15 +3,15 @@ var gadgets = gadgets || {};
 gadgets.pubsub = (function() {
   return {
     publish: function(channel, message) {
-      // TODO
+  	e4RPC('e4.opensocial.pubsub.publish', channel, message);
     },
 
     subscribe: function(channel, callback) {
-    	// TODO
+    	e4RPC('e4.opensocial.pubsub.subscribe', channel, callback.toString());
     },
 
     unsubscribe: function(channel) {
-    	// TODO
+    	e4RPC('e4.opensocial.pubsub.unsubscribe', channel);
     }
   };
 })();

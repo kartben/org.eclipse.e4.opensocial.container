@@ -2,17 +2,20 @@ var gadgets = gadgets || {};
 
 gadgets.window = gadgets.window || {};
 
-(function() {
+/**
+ * Detects the inner dimensions of a frame. See
+ * http://www.quirksmode.org/dom/w3c_cssom for more information.
+ */
+gadgets.window.getViewportDimensions = function() {
+	// TODO
+};
 
-	gadgets.window.getViewportDimensions = function() {
-		// TODO
-	};
-
-	gadgets.window.adjustHeight = function(opt_height) {
-		// TODO
-	};
-
-}());
+/**
+ * Adjusts the gadget height.
+ */
+gadgets.window.adjustHeight = function(opt_height) {
+	// TODO
+};
 
 // Legacy function
 var _IG_AdjustIFrameHeight = gadgets.window.adjustHeight;
