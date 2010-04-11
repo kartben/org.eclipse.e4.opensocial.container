@@ -93,12 +93,6 @@ public class FeatureManager implements ModuleResolver, IRegistryEventListener {
 		_featuresState.addBundle(FeatureUtils
 				.featureExtensionToBundleDescription(f, _featuresState
 						.getFactory()));
-		// _featuresState.resolve();
-		// BundleDescription[] resolvedBundles = _featuresState
-		// .getResolvedBundles();
-		// System.out.println(Arrays.toString(resolvedBundles));
-		// _featuresState.getStateHelper().sortBundles(resolvedBundles);
-		// System.out.println(Arrays.toString(resolvedBundles));
 	}
 
 	@Override
