@@ -43,14 +43,12 @@ public class SubscribeHandler extends AbstractPubSubHandler implements
 		EventHandler eventHandler = new EventHandler() {
 			@Override
 			public void handleEvent(Event event) {
-				final String source = (String) event
+				final Integer source = (Integer) event
 						.getProperty(MODULEID_EVENT_PROPERTY);
 				final String message = (String) event
 						.getProperty(EventConstants.MESSAGE);
 				browser.getDisplay().syncExec(new Runnable() {
 					public void run() {
-						System.out.println("var f = " + callbackName + " ; f("
-								+ source + ", " + message + ");");
 						browser.evaluate("var f = " + callbackName + "; f('"
 								+ source + "', '" + message + "');");
 					}

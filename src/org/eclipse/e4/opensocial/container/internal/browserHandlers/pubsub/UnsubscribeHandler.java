@@ -37,8 +37,7 @@ public class UnsubscribeHandler implements BrowserRPCHandler {
 	 */
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
+		// Nothing
 	}
 
 }

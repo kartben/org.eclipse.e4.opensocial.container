@@ -43,8 +43,7 @@ public class PublishHandler extends AbstractPubSubHandler {
 	 */
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
+		// Nothing
 	}
 
 }
