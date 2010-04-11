@@ -3,7 +3,7 @@ var gadgets = gadgets || {};
 gadgets.window = gadgets.window || {};
 
 gadgets.window.setTitle = function(title) {
-	// TODO
+	window.parent.document.title = title ;
 };
 
 // Legacy function

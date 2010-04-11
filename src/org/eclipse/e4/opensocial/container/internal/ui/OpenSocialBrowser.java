@@ -49,8 +49,8 @@ public class OpenSocialBrowser extends Composite {
 			BrowserUtils.registerHandlers(module, _browserRPC);
 			_browser.setText(html);
 		} catch (UnresolvedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// TODO log?
+			_browser.setText(e.getMessage());
 		}
 
 	}

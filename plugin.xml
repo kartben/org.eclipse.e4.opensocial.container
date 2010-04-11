@@ -59,7 +59,7 @@
             name="settitle"
             version="1.0.0">
          <script
-               source="js/set-title/set-title.js">
+               source="js/settitle/settitle.js">
          </script>
          <dependsOn
                feature="core">
