@@ -103,8 +103,7 @@ public class MakeXmlHttpRequestHandler implements BrowserRPCHandler {
 			}
 
 			// Instanciate and call callback
-			responseScript += "var callback = " + callback + ";\n"
-					+ "callback(response);\n";
+			responseScript += "(" + callback + ")(response);\n";
 
 			final String script = responseScript;
 			Display.getDefault().asyncExec(new Runnable() {
@@ -196,17 +195,19 @@ public class MakeXmlHttpRequestHandler implements BrowserRPCHandler {
 
 		String responseBodyAsString = "";
 		InputStream bodyAsStream = httpMethod.getResponseBodyAsStream();
+		BufferedReader reader = null;
 
 		StringBuilder sb = new StringBuilder();
 		String line;
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					bodyAsStream, "UTF-8"));
+			reader = new BufferedReader(new InputStreamReader(bodyAsStream,
+					"UTF-8"));
 			while ((line = reader.readLine()) != null) {
 				sb.append(line);
 			}
 		} finally {
-			bodyAsStream.close();
+			if (reader != null)
+				reader.close();
 		}
 
 		responseBodyAsString = sb.toString();

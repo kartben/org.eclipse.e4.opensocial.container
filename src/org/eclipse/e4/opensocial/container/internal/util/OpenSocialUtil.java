@@ -32,8 +32,12 @@ import org.eclipse.e4.opensocial.model.Module;
 import org.eclipse.e4.opensocial.model.Msg;
 import org.eclipse.e4.opensocial.model.UserPref;
 import org.eclipse.e4.opensocial.model.util.OpenSocialResourceFactoryImpl;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -53,6 +57,7 @@ public class OpenSocialUtil {
 		java.net.URI uri;
 		Module module;
 		try {
+			uri = new java.net.URI(uriString);
 			Resource resource = new OpenSocialResourceFactoryImpl()
 					.createResource(URI.createURI(uriString));
 			resource.load(Collections.EMPTY_MAP);
@@ -66,30 +71,33 @@ public class OpenSocialUtil {
 		hangmanMap.put("__MODULE_ID__", String.valueOf(moduleId++));
 		hangmanMap.put("__ENV_google_apps_auth_path__", "render#");
 
-		// populateHangmanMapFromLocale(hangmanMap, locale, uri);
-		// populateHangmanMapFromUserPrefs(hangmanMap, module.userPrefs);
-		//
-		// module.title = hangmanExpand(module.title, hangmanMap);
-		// module.description = hangmanExpand(module.description, hangmanMap);
-		// module.author = hangmanExpand(module.author, hangmanMap);
+		populateHangmanMapFromLocale(hangmanMap, locale, uri);
+		populateHangmanMapFromUserPrefs(hangmanMap, module.getUserPref());
 
-		// System.out.println("Gadget: " + module.title);
-		// System.out.println("Author: " + module.author);
-		// // System.out.println("Description: " + module.description);
-		//
-		// for (OSGContent content : new HashSet<OSGContent>(module.contents
-		// .values())) {
-		// if ("url".equalsIgnoreCase(content.type)) {
-		// content.href = hangmanExpand(content.href, hangmanMap);
-		// // System.out.println("URL: " + content.href);
-		// } else if ("html".equalsIgnoreCase(content.type)) {
-		// content.value = hangmanExpand(content.value, hangmanMap);
-		// // System.out.println("HTML: ...");
-		// } else {
-		// // System.out.println("unhandled type: " + content.type);
-		// }
-		// // System.out.println("Views: " + content.view);
-		// }
+		// perform hangman substitution on every attribute
+		// from Gadget Specification 1.0: Containers MUST perform substitution
+		// on all elements and attributes defined in Elements and Attributes
+		// (Section 4), with the exceptions of /ModulePrefs/Locale (and
+		// children), or any element with an explicit enumeration.
+		TreeIterator<EObject> it = module.eAllContents();
+		while (it.hasNext()) {
+			EObject o = it.next();
+			for (EAttribute att : o.eClass().getEAllAttributes()) {
+				if (FeatureMapUtil.isFeatureMap(att))
+					break;
+				System.out.println("type:" + att.getEType());
+				if (o.eGet(att) != null
+						&& att.getEType().getInstanceClassName().equals(
+								"java.lang.String")) {
+					// System.out.println(hangmanExpand(o.eGet(att).toString(),
+					// hangmanMap));
+					o.eSet(att, hangmanExpand(o.eGet(att).toString(),
+							hangmanMap));
+				}
+				System.out.println("----");
+			}
+		}
+
 		return module;
 	}
 
@@ -248,6 +256,7 @@ public class OpenSocialUtil {
 		StringBuffer result = new StringBuffer(s.length());
 		int currentIndex = 0;
 		int indexOfUnderscores;
+		// TODO use Regexp instead?
 		while ((indexOfUnderscores = s.indexOf("__", currentIndex)) != -1) {
 			result.append(s.substring(currentIndex, indexOfUnderscores));
 			int indexOfNextUnderscores = s
