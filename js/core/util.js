@@ -1,6 +1,6 @@
 var gadgets = gadgets || {};
 
-gadgets.util = gadgets.window || {};
+gadgets.util = gadgets.util || {};
 
 /**
  * Registers an onload handler; a function that's executed when the gadget
