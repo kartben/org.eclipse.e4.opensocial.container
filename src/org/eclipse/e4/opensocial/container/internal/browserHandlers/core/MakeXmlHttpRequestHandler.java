@@ -164,8 +164,9 @@ public class MakeXmlHttpRequestHandler implements BrowserRPCHandler {
 			String responseScript) {
 		// Parse response body to create the corresponding JSON
 		// object
+		// TODO: use a "real" JSON parser instead of a simple eval()
 		responseScript += "response.data=eval('(" + responseBodyAsString
-				+ ")')\n";
+				+ ")');\n";
 		return responseScript;
 	}
 

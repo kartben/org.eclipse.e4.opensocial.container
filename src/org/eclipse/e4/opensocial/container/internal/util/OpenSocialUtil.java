@@ -87,12 +87,12 @@ public class OpenSocialUtil {
 					break;
 				System.out.println("type:" + att.getEType());
 				if (o.eGet(att) != null
-						&& att.getEType().getInstanceClassName().equals(
-								"java.lang.String")) {
+						&& att.getEType().getInstanceClassName()
+								.equals("java.lang.String")) {
 					// System.out.println(hangmanExpand(o.eGet(att).toString(),
 					// hangmanMap));
-					o.eSet(att, hangmanExpand(o.eGet(att).toString(),
-							hangmanMap));
+					o.eSet(att,
+							hangmanExpand(o.eGet(att).toString(), hangmanMap));
 				}
 				System.out.println("----");
 			}
@@ -104,8 +104,8 @@ public class OpenSocialUtil {
 	private static void populateHangmanMapFromUserPrefs(
 			Map<String, String> hangmanMap, List<UserPref> userPrefs) {
 		for (UserPref pref : userPrefs) {
-			hangmanMap.put("__UP_" + pref.getName() + "__", pref
-					.getDefaultValue());
+			hangmanMap.put("__UP_" + pref.getName() + "__",
+					pref.getDefaultValue());
 		}
 	}
 
@@ -127,8 +127,8 @@ public class OpenSocialUtil {
 				if (!messagesURIString.startsWith("http")) {
 					if (!messagesURIString.startsWith("/")) {
 						String uriString = uri.toString();
-						messagesURIString = uriString.substring(0, uriString
-								.lastIndexOf('/'))
+						messagesURIString = uriString.substring(0,
+								uriString.lastIndexOf('/'))
 								+ "/" + messagesURIString;
 					} else {
 						messagesURIString = "http://" + uri.getHost()
@@ -276,6 +276,7 @@ public class OpenSocialUtil {
 				currentIndex = indexOfUnderscores + 2;
 			}
 		}
+
 		result.append(s.substring(currentIndex));
 		return result.toString();
 	}

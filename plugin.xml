@@ -14,6 +14,9 @@
                source="js/core/log.js">
          </script>
          <script
+               source="js/core/json.js">
+         </script>
+         <script
                source="js/core/window.js">
          </script>
          <browserRPCHandler

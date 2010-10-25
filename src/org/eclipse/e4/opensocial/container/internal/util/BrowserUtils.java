@@ -57,7 +57,7 @@ public class BrowserUtils {
 					+ "' *********/\r\n");
 			for (Entry<String, String> script : feature.getJavascriptSources()
 					.entrySet()) {
-				sb.append("// - " + script.getKey() + "\r\n");
+				sb.append("// " + script.getKey() + "\r\n");
 				sb.append(script.getValue() + "\r\n");
 			}
 		}
@@ -77,8 +77,8 @@ public class BrowserUtils {
 		for (Feature feature : features) {
 			for (Entry<String, BrowserRPCHandler> handlerEntry : feature
 					.getBrowserRPCHandlers().entrySet()) {
-				_browserRPC.addRPCHandler(handlerEntry.getKey(), handlerEntry
-						.getValue());
+				_browserRPC.addRPCHandler(handlerEntry.getKey(),
+						handlerEntry.getValue());
 			}
 		}
 
