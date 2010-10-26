@@ -26,6 +26,11 @@ import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.osgi.service.resolver.State;
 
+/**
+ * Implementation of {@link ModuleResolver} service relying on the declaration
+ * of OpenSocial features made through the
+ * <code>org.eclipse.e4.opensocial.container.features</code> extension point
+ */
 public class FeatureManager implements ModuleResolver, IRegistryEventListener {
 	private static final String FEATURES_EXT_POINT_ID = "org.eclipse.e4.opensocial.container.features";
 	private static final String FEATURE_ELEM = "feature";
@@ -91,8 +96,8 @@ public class FeatureManager implements ModuleResolver, IRegistryEventListener {
 		Feature f = new Feature(name, version, ice);
 		_availableFeatures.put(name, f);
 		_featuresState.addBundle(FeatureUtils
-				.featureExtensionToBundleDescription(f, _featuresState
-						.getFactory()));
+				.featureExtensionToBundleDescription(f,
+						_featuresState.getFactory()));
 	}
 
 	@Override
@@ -133,17 +138,24 @@ public class FeatureManager implements ModuleResolver, IRegistryEventListener {
 		List<Feature> features = new ArrayList<Feature>();
 		BundleDescription moduleDesc = FeatureUtils.moduleToBundleDescription(
 				module, _platformAdmin.getFactory());
-		// !!! WAITING FOR FIX OF BUG 308738 !!!
 		State temporaryState = _platformAdmin.getFactory().createState(
 				_featuresState);
+		// !!! WAITING FOR FIX OF BUG 308738 !!!
+		boolean bug308738 = true;
+		if (bug308738) {
+			for (BundleDescription b : _featuresState.getBundles()) {
+				temporaryState.getBundle(b.getBundleId()).setUserObject(
+						b.getUserObject());
+			}
+		}
 		// !!!!!
 		temporaryState.setResolver(_platformAdmin.createResolver());
 		temporaryState.addBundle(moduleDesc);
 		temporaryState.resolve();
 
 		if (!moduleDesc.isResolved()) {
-			throw new UnresolvedException(module, temporaryState
-					.getResolverErrors(moduleDesc));
+			throw new UnresolvedException(module,
+					temporaryState.getResolverErrors(moduleDesc));
 		}
 
 		BundleDescription[] bundles = temporaryState.getStateHelper()
