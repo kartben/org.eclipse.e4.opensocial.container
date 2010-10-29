@@ -31,7 +31,7 @@ public class PublishHandler extends AbstractPubSubHandler {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		properties.put(EventConstants.MESSAGE, arguments[2]);
 		// TODO
-		// properties.put(MODULEID_EVENT_PROPERTY, 1234);
+		// properties.put("MODULEID_EVENT_PROPERTY", 1234);
 		getEventAdmin().postEvent(new Event((String) arguments[1], properties));
 		return null;
 	}

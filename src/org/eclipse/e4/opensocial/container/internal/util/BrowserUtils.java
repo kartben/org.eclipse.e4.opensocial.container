@@ -34,6 +34,9 @@ public class BrowserUtils {
 
 		sb.append("<html>\r\n");
 		sb.append("<head>\r\n</head>\r\n");
+		sb.append("<title>\r\n");
+		sb.append(module.getModulePrefs().getTitle());
+		sb.append("</title>\r\n");
 		sb.append("<body>\r\n");
 
 		appendContainerScripts(module, sb);
@@ -67,6 +70,10 @@ public class BrowserUtils {
 	private static void appendModuleContent(Module module, StringBuilder sb) {
 		if (module.getContent().get(0).getType() == Type.HTML) {
 			sb.append(module.getContent().get(0).getValue());
+		} else if (module.getContent().get(0).getType() == Type.URL) {
+			sb.append("<iframe frameborder=\"0\" style=\"height:100%; width:100%;\" src=\"");
+			sb.append(module.getContent().get(0).getHref());
+			sb.append("\"/>");
 		}
 
 	}

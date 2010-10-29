@@ -17,6 +17,8 @@ import java.util.List;
 
 import org.eclipse.e4.ui.web.BrowserRPCHandler;
 import org.eclipse.swt.browser.Browser;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
@@ -45,12 +47,34 @@ public class SubscribeHandler extends AbstractPubSubHandler implements
 			public void handleEvent(Event event) {
 				final Integer source = (Integer) event
 						.getProperty(MODULEID_EVENT_PROPERTY);
-				final String message = (String) event
-						.getProperty(EventConstants.MESSAGE);
+				// 'message' field is the JSON representation of the event
+				// properties map
+				final JSONObject message = new JSONObject();
+				try {
+					for (String key : event.getPropertyNames()) {
+						Object value = event.getProperty(key);
+						if (value instanceof String)
+							message.put(key, (String) value);
+						else if (value instanceof Integer)
+							message.put(key, (Integer) value);
+						else if (value instanceof Long)
+							message.put(key, (Long) value);
+						else if (value instanceof Double)
+							message.put(key, (Double) value);
+						else
+							message.put(key, value.toString()
+									+ "                                    ");
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
 				browser.getDisplay().syncExec(new Runnable() {
 					public void run() {
-						browser.evaluate("var f = " + callbackName + "; f('"
-								+ source + "', '" + message + "');");
+						if (!browser.isDisposed())
+							browser.evaluate("var f = " + callbackName
+									+ "; f('" + source + "', '"
+									+ message.toString() + "');");
 					}
 				});
 			}

@@ -54,7 +54,19 @@ public class FeatureManager implements ModuleResolver, IRegistryEventListener {
 		_featuresState = _platformAdmin.getFactory().createState(true);
 
 		_featuresState.addBundle(_platformAdmin.getFactory()
-				.createBundleDescription(1, "opensocial-0.8", null, null, null,
+				.createBundleDescription(1, "opensocial-0.7", null, null, null,
+						null, null, null, false, false, false, null, null,
+						null, null, null));
+		_featuresState.addBundle(_platformAdmin.getFactory()
+				.createBundleDescription(2, "opensocial-0.8", null, null, null,
+						null, null, null, false, false, false, null, null,
+						null, null, null));
+		_featuresState.addBundle(_platformAdmin.getFactory()
+				.createBundleDescription(3, "opensocial-0.9", null, null, null,
+						null, null, null, false, false, false, null, null,
+						null, null, null));
+		_featuresState.addBundle(_platformAdmin.getFactory()
+				.createBundleDescription(4, "opensocial", null, null, null,
 						null, null, null, false, false, false, null, null,
 						null, null, null));
 	}

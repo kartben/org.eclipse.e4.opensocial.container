@@ -30,6 +30,7 @@ import org.eclipse.e4.opensocial.model.LanguageDirection;
 import org.eclipse.e4.opensocial.model.Locale;
 import org.eclipse.e4.opensocial.model.Module;
 import org.eclipse.e4.opensocial.model.Msg;
+import org.eclipse.e4.opensocial.model.OpenSocialPackage;
 import org.eclipse.e4.opensocial.model.UserPref;
 import org.eclipse.e4.opensocial.model.util.OpenSocialResourceFactoryImpl;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -79,13 +80,17 @@ public class OpenSocialUtil {
 		// on all elements and attributes defined in Elements and Attributes
 		// (Section 4), with the exceptions of /ModulePrefs/Locale (and
 		// children), or any element with an explicit enumeration.
+
+		// Current limitation: element substitution is not possible (unless the
+		// elements are somewhere inside the textual Content of the module
 		TreeIterator<EObject> it = module.eAllContents();
 		while (it.hasNext()) {
 			EObject o = it.next();
 			for (EAttribute att : o.eClass().getEAllAttributes()) {
+				if (OpenSocialPackage.Literals.LOCALE == att.eContainer())
+					continue;
 				if (FeatureMapUtil.isFeatureMap(att))
-					break;
-				System.out.println("type:" + att.getEType());
+					continue;
 				if (o.eGet(att) != null
 						&& att.getEType().getInstanceClassName()
 								.equals("java.lang.String")) {
@@ -94,7 +99,6 @@ public class OpenSocialUtil {
 					o.eSet(att,
 							hangmanExpand(o.eGet(att).toString(), hangmanMap));
 				}
-				System.out.println("----");
 			}
 		}
 
@@ -104,8 +108,9 @@ public class OpenSocialUtil {
 	private static void populateHangmanMapFromUserPrefs(
 			Map<String, String> hangmanMap, List<UserPref> userPrefs) {
 		for (UserPref pref : userPrefs) {
-			hangmanMap.put("__UP_" + pref.getName() + "__",
-					pref.getDefaultValue());
+			String value = (pref.getValue() != null) ? pref.getValue() : pref
+					.getDefaultValue();
+			hangmanMap.put("__UP_" + pref.getName() + "__", value);
 		}
 	}
 

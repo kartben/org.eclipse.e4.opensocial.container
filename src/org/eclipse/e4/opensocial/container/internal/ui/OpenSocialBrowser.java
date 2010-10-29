@@ -14,6 +14,8 @@ import org.eclipse.e4.opensocial.container.internal.util.BrowserUtils;
 import org.eclipse.e4.opensocial.container.resolver.ModuleResolver.UnresolvedException;
 import org.eclipse.e4.opensocial.model.Module;
 import org.eclipse.e4.ui.web.BrowserRPC;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.FillLayout;
@@ -26,7 +28,6 @@ import org.eclipse.swt.widgets.Composite;
 public class OpenSocialBrowser extends Composite {
 
 	private Module _module;
-
 	private BrowserRPC _browserRPC;
 	private Browser _browser;
 
@@ -43,17 +44,28 @@ public class OpenSocialBrowser extends Composite {
 		_browserRPC = new BrowserRPC(_browser);
 
 		_module = module;
+		_module.getModulePrefs().eAdapters().add(new EContentAdapter() {
+			@Override
+			public void notifyChanged(Notification notification) {
+				System.out.println("preference changed => refresh gadget");
+				refreshBrowserContent();
+			}
+		});
 
+		refreshBrowserContent();
+
+	}
+
+	private void refreshBrowserContent() {
 		try {
-			String html = BrowserUtils.generateHtml(module);
+			String html = BrowserUtils.generateHtml(_module);
 			System.out.println(html);
-			BrowserUtils.registerHandlers(module, _browserRPC);
+			BrowserUtils.registerHandlers(_module, _browserRPC);
 			_browser.setText(html);
 		} catch (UnresolvedException e) {
 			// TODO log?
 			_browser.setText(e.getMessage());
 		}
-
 	}
 
 	public Browser getBrowser() {
